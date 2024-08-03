@@ -1,4 +1,5 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Filter = ({ onFilter }) => {
   const [titleFilter, setTitleFilter] = useState('');
@@ -26,7 +27,7 @@ const Filter = ({ onFilter }) => {
           borderRadius: '5px',
           border: '1px solid #ccc',
           marginRight: '10px',
-          width: '200px'
+          width: '200px',
         }}
       />
       <label style={{ marginRight: '10px', color: 'blue' }}>Rating Filter:</label>
@@ -42,11 +43,15 @@ const Filter = ({ onFilter }) => {
           borderRadius: '5px',
           border: '1px solid #ccc',
           width: '80px',
-          color:  'black'
+          color: 'black',
         }}
       />
     </div>
   );
+};
+
+Filter.propTypes = {
+  onFilter: PropTypes.func.isRequired,
 };
 
 export default Filter;

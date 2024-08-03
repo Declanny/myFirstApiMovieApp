@@ -6,11 +6,11 @@ const MovieList = () => {
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [titleFilter, setTitleFilter] = useState('');
-  const [ratingFilter, setRatingFilter] = useState('');
+  const [ratingFilter, setRatingFilter] = useState(0);
 
   useEffect(() => {
     fetchMovies();
-  }, []); // Empty dependency array to run once on component mount
+  }, []);
 
   const fetchMovies = async () => {
     const url = 'https://imdb-top-100-movies.p.rapidapi.com/';
@@ -32,14 +32,11 @@ const MovieList = () => {
       setFilteredMovies(data); // Initialize filteredMovies with all movies
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Handle error state or notification to the user
     }
   };
 
   const handleAddMovie = (newMovie) => {
-    // Update movies state to add newMovie
     setMovies([...movies, newMovie]);
-    // Update filteredMovies state to include newMovie if it matches current filters
     if (passesFilters(newMovie)) {
       setFilteredMovies([...filteredMovies, newMovie]);
     }
@@ -51,11 +48,15 @@ const MovieList = () => {
     } else if (filterType === 'rating') {
       setRatingFilter(value);
     }
-    // Filter movies based on title and rating filters
+    // Apply filters after setting the new filter values
+    filterMovies(value, filterType === 'rating' ? value : ratingFilter, filterType === 'title' ? value : titleFilter);
+  };
+
+  const filterMovies = (title, rating) => {
     const filtered = movies.filter(movie => {
       return (
-        movie.title.toLowerCase().includes(titleFilter.toLowerCase()) &&
-        movie.rating >= ratingFilter
+        movie.title.toLowerCase().includes(title.toLowerCase()) &&
+        movie.rating >= rating
       );
     });
     setFilteredMovies(filtered);
@@ -68,10 +69,9 @@ const MovieList = () => {
     );
   };
 
-  // Styles
   const styles = {
     pageContainer: {
-      backgroundColor: '#333', // Adjust to your preferred "Graydark" color
+      backgroundColor: '#333',
       color: '#fff',
       minHeight: '100vh',
       padding: '20px',
@@ -103,6 +103,7 @@ const MovieList = () => {
         {filteredMovies.map((movie) => (
           <MovieCard
             key={movie.id}
+            id={movie.id}
             title={movie.title}
             imgUrl={movie.image}
             description={movie.description}
